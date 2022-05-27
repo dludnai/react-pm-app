@@ -1,0 +1,2 @@
+Installing an old version of NodeJS(14.17.5) using Volta => https://askubuntu.com/questions/1348348/trying-to-install-volta-sh-package-library
+Using dotenv to hide some important variables from teh firebase config => https://www.npmjs.com/package/dotenv
