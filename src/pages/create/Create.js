@@ -19,10 +19,11 @@ const categories = [
 export default function Create() {
 
     // Get all the documents
-
     const { documents } = useCollection('users');
     //console.log(documents);
 
+    // Mapping through documents object to create a new array
+    // Storing in the new array
     const [users, setUsers] = useState([]);
 
     // Form field values
@@ -32,9 +33,19 @@ export default function Create() {
     const [category, setCategory] = useState('');
     const [assignedUsers, setAssignedUsers] = useState([]);
 
+    // If we have documents map through them and update users
+    useEffect(() => {
+        if(documents) {
+            const options = documents.map(user => {
+                return { value: user, label: user.displayName }
+            });
+            setUsers(options);
+        }
+    }, [documents])
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(name, details, dueDate, category.value);
+        console.log(name, details, dueDate, category.value, assignedUsers);
     }
 
     return (
@@ -78,7 +89,9 @@ export default function Create() {
                 <label>
                     <span>Assign to:</span>
                     <Select 
+                        onChange={(option) => setAssignedUsers(option)}
                         options={users}
+                        isMulti
                     /> 
                 </label>
 
