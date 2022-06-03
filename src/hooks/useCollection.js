@@ -26,7 +26,7 @@ export const useCollection = (collection, _query, _orderBy) => {
         results.push({...doc.data(), id: doc.id})
       });
       
-      // update state
+      // Update state
       setDocuments(results)
       setError(null)
     }, error => {
@@ -34,7 +34,7 @@ export const useCollection = (collection, _query, _orderBy) => {
       setError('could not fetch the data')
     })
 
-    // unsubscribe on unmount
+    // Unsubscribe on unmount
     return () => unsubscribe()
 
   }, [collection, query, orderBy])
