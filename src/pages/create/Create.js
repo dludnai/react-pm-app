@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useCollection } from '../../hooks/useCollection';
+import { timestamp } from '../../firebase/config';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 // Styles
 import './Create.css';
@@ -26,12 +28,16 @@ export default function Create() {
     // Storing in the new array
     const [users, setUsers] = useState([]);
 
+    // Current user that is logged in
+    const { user } = useAuthContext();
+
     // Form field values
     const [name, setName] = useState('');
     const [details, setDetails] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [category, setCategory] = useState('');
     const [assignedUsers, setAssignedUsers] = useState([]);
+    const [formError, setFormError] = useState(null);
 
     // If we have documents map through them and update users
     useEffect(() => {
@@ -45,7 +51,49 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(name, details, dueDate, category.value, assignedUsers);
+
+        // Reset the error
+        setFormError(null);
+
+        // Check the category
+        if(!category) {
+            setFormError('Please select a project category');
+            return;
+        }
+
+        // Check assigned users array length
+        if(assignedUsers.length < 1) {
+            setFormError('Please assign the project to at least 1 user');
+            return;
+        }
+
+        const createdBy = {
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            id: user.uid
+        }
+
+        // Create a simplified array of different objects
+        const assignedUsersList = assignedUsers.map((u) => {
+            return {
+                displayName: u.value.displayName,
+                photoURL: u.value.photoURL,
+                id: u.value.id
+            }
+        })
+
+        // Create project object which we will save in the database
+        const project = {
+            name,
+            details,
+            category: category.value,
+            dueDate: timestamp.fromDate(new Date(dueDate)),
+            comments: [],
+            createdBy,
+            assignedUsersList
+        }
+
+        console.log(project);
     }
 
     return (
@@ -96,6 +144,8 @@ export default function Create() {
                 </label>
 
                 <button className="btn">Add Project</button>
+
+                {formError && <p className="error">{formError}</p>}
             </form>
         </div>
     )
