@@ -1,8 +1,11 @@
 import { useDocument } from '../../hooks/useDocument';
 import { useParams } from 'react-router-dom';
+import ProjectSummary from './ProjectSummary';
+import ProjectComments from './ProjectComments';
 
 // Styles
 import './Project.css';
+
 
 export default function Project() {
 
@@ -10,7 +13,7 @@ export default function Project() {
     const { id } = useParams();
     const { error, document } = useDocument('projects', id);
 
-    // Different way to return conditional templating
+    // Different way of returning conditional templating
     if (error) {
         return <div className="error">{error}</div>
     }
@@ -21,7 +24,8 @@ export default function Project() {
 
     return (
         <div className="project-details">
-            <h1>{document.name}</h1>
+            <ProjectSummary project={document} />
+            <ProjectComments project={document} />
         </div>
     )
 }
