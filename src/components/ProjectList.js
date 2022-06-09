@@ -1,0 +1,31 @@
+import { Link } from 'react-router-dom';
+import Avatar from './Avatar';
+
+//Styles
+import './ProjectList.css';
+
+export default function ProjectList({ projects }) {
+    return(
+        <div className="project-list">
+            {/* Check if the array is equal to 0 */}
+            {projects.length === 0 && <p>No projects yet!</p>}
+            
+            {/* For each project we will output informations */}
+            {projects.map(project => (
+                <Link to={`/projects/${project.id}`} key={project.id}>
+                    <h4>{project.name}</h4>
+                    <p>Due by {project.dueDate.toDate().toDateString()}</p>
+                    <div className="assigned-to">
+                        <ul>
+                        {project.assignedUsersList.map(user => (
+                            <li key={user.photoURL}>
+                                <Avatar src={user.photoURL}/>
+                            </li>
+                        ))}
+                        </ul>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    )
+}
